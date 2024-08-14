@@ -122,16 +122,25 @@ class Apprentice extends \App\Controllers\BaseController
         else 
         {
             // User is a trainer - lists their linked apprentices
-            if (count($this->trainer_apprentice_model->where('fk_trainer', $trainer_id)->findAll()))
-                $apprentices = $this->user_model->whereIn('id', array_column($this->trainer_apprentice_model->where('fk_trainer', $trainer_id)->findAll(), 'fk_apprentice'))->orderBy('username', 'ASC')->findAll();
+            $apprenticeLinked = $this->trainer_apprentice_model
+                                          ->where('fk_trainer', $trainer_id)
+                                          ->findAll();
+            $apprenticeCount = count($apprenticeLinked);
+            if ($apprenticeCount) {
+                $apprentices = $this->user_model
+                    ->whereIn('id', array_column($apprenticeLinked))
+                    ->orderBy('username', 'ASC')->findAll();
+            }
         }
 
         $coursesList = array();
 
-        foreach ($this->course_plan_model->withDeleted(true)->findAll() as $courseplan)
-            $coursesList[$courseplan['id']]=$courseplan;
+        foreach ($this->course_plan_model->withDeleted()->findAll() as $courseplan)
+        {
+            $coursesList[$courseplan['id']] = $courseplan;
+        }
 
-        $courses = $this->user_course_model->withDeleted(true)->findAll();
+        $courses = $this->user_course_model->withDeleted()->findAll();
 
         // Data to send to the view
         $output = array(

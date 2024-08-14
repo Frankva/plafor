@@ -146,7 +146,6 @@ class User_model extends \CodeIgniter\Model {
             $fk_user_type = $user_type_model
                 ->where('access_level', config("\User\Config\UserConfig")
                 ->access_level_apprentice)
-                ->orderBy('username', 'ASC')
                 ->first()['id'];
             return $user_model
                 ->where('fk_user_type', $fk_user_type)
@@ -154,7 +153,8 @@ class User_model extends \CodeIgniter\Model {
         }
         $fk_user_type = $user_type_model->where('name', 'Apprenti')
                                         ->first()['id'];
-        return $user_model->where('fk_user_type', $fk_user_type)->findAll();
+        return $user_model->where('fk_user_type', $fk_user_type)
+                          ->orderBy('username', 'ASC')->findAll();
     }
 
     /**
@@ -198,10 +198,13 @@ class User_model extends \CodeIgniter\Model {
 
         $apprentices = $this->getApprentices();
         
-        $assinged_apprentices = TrainerApprenticeModel::getInstance()->select('fk_apprentice')->distinct()->findAll();;
+        $trainerApprenticeModel = model('TrainerApprenticeModel');
+        $assinged_apprentices = $trainerApprenticeModel
+            ->select('fk_apprentice')->distinct()->findAll();
 
         foreach($assinged_apprentices as $assinged_apprentice)
-            array_push($assigned_apprentices_list, $assinged_apprentice['fk_apprentice']);
+            array_push($assigned_apprentices_list,
+                $assinged_apprentice['fk_apprentice']);
 
         foreach($apprentices as $apprentice)
         {
