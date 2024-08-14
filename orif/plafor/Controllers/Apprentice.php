@@ -128,8 +128,8 @@ class Apprentice extends \App\Controllers\BaseController
             $apprenticeCount = count($apprenticeLinked);
             if ($apprenticeCount) {
                 $apprentices = $this->user_model
-                    ->whereIn('id', array_column($apprenticeLinked))
-                    ->orderBy('username', 'ASC')->findAll();
+                ->whereIn('id', array_column($apprenticeLinked,
+                    'fk_apprentice'))->orderBy('username', 'ASC')->findAll();
             }
         }
 
