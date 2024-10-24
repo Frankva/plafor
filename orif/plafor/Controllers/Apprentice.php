@@ -830,6 +830,7 @@ class Apprentice extends \App\Controllers\BaseController
             if(empty($this->acquisition_status_model->errors()))
                 $this->response->setStatusCode(200);
         }
+        return redirect()->to(base_url('plafor/apprentice/list_apprentice'));
     }
 
 
@@ -1048,6 +1049,11 @@ class Apprentice extends \App\Controllers\BaseController
 
         if(is_null($user))
             return redirect()->to(base_url('/user/admin/list_user'));
+        // TODO fix $apprentice and $trainer array
+        $apprentice ??= [ 'username' => '',
+        'id' => ''];
+        $trainer ??= [ 'username' => '',
+        'id' => ''];
 
         if(!$confirm)
         {
